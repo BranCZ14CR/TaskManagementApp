@@ -4,20 +4,35 @@
     ViewData["Title"] = "Confirmación de Registro";
 }
 
-<h1>@ViewData["Title"]</h1>
-@{
-    if (@Model.DisplayConfirmAccountLink)
-    {
-        <p>
-            Esta aplicación actualmente no tiene un remitente de correo electrónico real registrado
-            <strong> Click aquí para confirmar: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Activar cuenta</a> </strong>
-        </p>
-    }
-    else
-    {
-        <p>
-            Por favor, verifique su correo electrónico para confirmar su cuenta.
-        </p>
-    }
-}
-
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-success text-white text-center">
+                    <h2>@ViewData["Title"]</h2>
+                </div>
+                <div class="card-body text-center">
+                    @if (@Model.DisplayConfirmAccountLink)
+                    {
+                        <p class="mb-4">
+                            Esta aplicación actualmente no tiene un remitente de correo electrónico real registrado, por favor active su cuenta a continuación para poder entrar al sistema
+                        </p>
+                        <p>
+                            <strong>
+                                <a id="confirm-link" href="@Model.EmailConfirmationUrl" class="btn btn-success btn-lg">
+                                    <i class="fa-solid fa-user-check"></i> Activar cuenta
+                                </a>
+                            </strong>
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            Por favor, verifique su correo electrónico para confirmar su cuenta.
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

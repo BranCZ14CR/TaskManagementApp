@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
@@ -106,6 +107,20 @@ namespace TaskManagementApp.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
+        // Diccionario de traducción de errores
+        private readonly Dictionary<string, string> _errorTranslations = new Dictionary<string, string>
+        {
+            { "Passwords must have at least one non alphanumeric character.", "Las contraseñas deben tener al menos un carácter no alfanumérico." },
+            { "Passwords must have at least one digit ('0'-'9').", "Las contraseñas deben tener al menos un dígito ('0'-'9')." },
+            { "Passwords must have at least one lowercase ('a'-'z').", "Las contraseñas deben tener al menos una letra minúscula ('a'-'z')." },
+            { "Passwords must have at least one uppercase ('A'-'Z').", "Las contraseñas deben tener al menos una letra mayúscula ('A'-'Z')." },
+            // Agrega más traducciones según sea necesario
+        };
+
+        // Expresión regular para detectar el mensaje de "correo ya tomado"
+        private readonly Regex _emailTakenRegex = new Regex(@"Username '(.+)' is already taken\.", RegexOptions.Compiled);
+
+
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
@@ -146,7 +161,22 @@ namespace TaskManagementApp.Areas.Identity.Pages.Account
                 }
                 foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    // Verificar si el mensaje coincide con el patrón de "correo ya tomado"
+                    var match = _emailTakenRegex.Match(error.Description);
+                    if (match.Success)
+                    {
+                        var email = match.Groups[1].Value;
+                        ModelState.AddModelError(string.Empty, $"El correo electrónico '{email}' ya está en uso.");
+                    }
+                    else if (_errorTranslations.TryGetValue(error.Description, out string translatedError))
+                    {
+                        ModelState.AddModelError(string.Empty, translatedError);
+                    }
+                    else
+                    {
+                        // Si no hay traducción, muestra el mensaje original
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
             }
 
