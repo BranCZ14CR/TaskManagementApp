@@ -1,0 +1,60 @@
+﻿@page
+@model TaskManagementApp.Pages.Tasks.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].Titulo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].Descripcion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].FechaVencimiento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].Completada)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TaskItem[0].UsuarioId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.TaskItem) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Titulo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaVencimiento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Completada)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsuarioId)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
