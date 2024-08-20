@@ -56,7 +56,7 @@ namespace TaskManagementApp.Pages.Tasks
 
             //Obtenener la informacion para mostrar en la pantalla
             TaskItem = taskitem;
-            UserEmail = user.UserName;
+            UserEmail = user.UserName!;
 
             return Page();
         }

@@ -96,7 +96,7 @@ namespace TaskManagementApp.Pages.Tasks
                     Comprobar si el usuario es el administrador para mostrarle toda la lista de los usuarios, si no es asi entonces solo mostrar el usuario
                     de la cuenta actual
                 */
-                if (await _userManager.IsInRoleAsync(currentUser, "SuperUser"))
+                if (await _userManager.IsInRoleAsync(currentUser!, "SuperUser"))
                 {
                     // Si es SuperUser, muestra todos los usuarios
                     Usuarios = new SelectList(await _context.Users.ToListAsync(), "Id", "Email", TaskItem.UsuarioId);
@@ -105,7 +105,7 @@ namespace TaskManagementApp.Pages.Tasks
                 {
                     // Si no es SuperUser, muestra solo su propio usuario
                     Usuarios = new SelectList(await _context.Users
-                        .Where(u => u.Id == currentUser.Id).ToListAsync(), "Id", "Email", TaskItem.UsuarioId);
+                        .Where(u => u.Id == currentUser!.Id).ToListAsync(), "Id", "Email", TaskItem.UsuarioId);
                 }
                 return Page();
             }
