@@ -1,9 +1,12 @@
-﻿@page
+﻿@* Pantalla para agregar una tarea, contiene el formulario con todos los campos establecidos segun los requerimientos  *@
+
+@page
 @model TaskManagementApp.Pages.Tasks.CreateModel
 
 @{
     ViewData["Title"] = "Nueva Tarea";
-    // Obtener la fecha actual incrementada en un día en formato YYYY-MM-DD
+
+    // Obtener la fecha actual incrementada en un día en formato YYYY-MM-DD, esto para que la Fecha de Vencimiento sea un dia despues a hoy
     var nextDay = DateTime.Today.AddDays(1).ToString("yyyy-MM-dd");
 }
 
@@ -80,7 +83,7 @@
         // Obtener la fecha actual en formato YYYY-MM-DD
         var today = new Date().toISOString().split('T')[0];
 
-        // Establecer la fecha mínima para el campo de fecha
+        // Establecer la fecha mínima para el campo de fecha, esto para que los usuarios no puedan asignar fechas de vencimiento ya pasadas a hoy
         $('#FechaVencimiento').attr('min', today);
     });
 </script>

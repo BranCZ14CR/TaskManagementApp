@@ -1,4 +1,6 @@
-﻿@page
+﻿@* Pagina de manejo de error en caso de no encontrar alguna tarea o bien para controlar excepciones *@
+
+@page
 @model ErrorModel
 @{
     ViewData["Title"] = "404 Error";
@@ -9,7 +11,7 @@
         <img style="max-width: 60%;" class="rounded mx-auto d-block img-fluid" src="https://static.vecteezy.com/system/resources/previews/006/549/647/original/404-landing-page-free-vector.jpg" />
 
         <h3 class="text-dark mt-5 text-center mb-3">
-            Lo sentimos, en el sistema no se encuentra lo que esta buscando :(
+            Lo sentimos, en el sistema no se encuentra lo que esta buscando
         </h3>
 
         <a asp-page="/Tasks/Index" class="btn text-white bg-success mx-auto mt-5 btn-lg" style="display: flex; justify-content: center; align-items: center">

@@ -1,12 +1,7 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
-
-using System;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,6 +9,9 @@ using Microsoft.AspNetCore.WebUtilities;
 
 namespace TaskManagementApp.Areas.Identity.Pages.Account
 {
+    /*
+        Clase autogenerada por el Identity
+     */
     public class ConfirmEmailModel : PageModel
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -44,6 +42,7 @@ namespace TaskManagementApp.Areas.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
+            //Cambio de idioma en los mensajes que aparecen
             StatusMessage = result.Succeeded ? "Cuenta activada satisfactoriamente, saludos." : "Error al activar la cuenta.";
             return Page();
         }

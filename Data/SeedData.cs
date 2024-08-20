@@ -3,10 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 
+/*
+    Clase para crear al superusuario o al administrador, esto para que dicho usuario pueda ver todas las tareas de los demas usuarios
+ */
 public class SeedData
 {
     public static async Task Initialize(IServiceProvider serviceProvider)
     {
+        //Atributos para crear su rol y su cuenta
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
@@ -18,8 +22,8 @@ public class SeedData
             await roleManager.CreateAsync(new IdentityRole(superUserRole));
         }
 
-        // Crear el superusuario si no existe
-        string superUserEmail = "admin@mail.com";
+        // Crear la cuenta del superusuario si no existe
+        string superUserEmail = "admin@mail.com"; //Correo del Admin
         var superUser = await userManager.FindByEmailAsync(superUserEmail);
         if (superUser == null)
         {
@@ -29,10 +33,10 @@ public class SeedData
                 Email = superUserEmail,
                 EmailConfirmed = true
             };
-            await userManager.CreateAsync(superUser, "Qyvxdr58*");
+            await userManager.CreateAsync(superUser, "Qyvxdr58*"); //Constraseña del Admin
         }
 
-        // Asignar el rol de superusuario al superusuario
+        // Asignar el rol de superusuario al administrados
         if (!await userManager.IsInRoleAsync(superUser, superUserRole))
         {
             await userManager.AddToRoleAsync(superUser, superUserRole);

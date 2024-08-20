@@ -1,9 +1,12 @@
-﻿@page
+﻿@* Pantalla para editar una tarea, contiene el formulario con todos los campos establecidos segun los requerimientos  *@
+
+@page
 @model TaskManagementApp.Pages.Tasks.EditModel
 
 @{
     ViewData["Title"] = "Editar Tarea";
-    // Obtener la fecha actual en formato YYYY-MM-DD
+
+    // Obtener la fecha actual en formato YYYY-MM-DD, para que no se pueda asignar una fecha anterior al dia de hoy
     var today = DateTime.Today.ToString("yyyy-MM-dd");
 }
 

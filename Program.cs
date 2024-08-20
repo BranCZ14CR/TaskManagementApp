@@ -4,7 +4,7 @@ using TaskManagementApp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Agregar los servicios y indicar al programa que use SQLite
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(connectionString));
@@ -12,9 +12,17 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Configuración para roles
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddRoles<IdentityRole>() // Añadir soporte para roles
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddRazorPages();
+
+// Agrega servicios al contenedor
+builder.Services.AddRazorPages()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+    });
+
 
 var app = builder.Build();
 
@@ -31,18 +39,12 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
-app.UseAuthentication(); // Asegúrate de añadir la autenticación
+app.UseAuthentication(); 
 app.UseAuthorization();
-
-// Configuración de la página de error 404
-app.UseStatusCodePagesWithReExecute("/NotFound");
-
 app.MapRazorPages();
 
-// Inicializa datos de ejemplo (roles y superusuario)
+// Inicializar la cuenta de administrador al momento de ejecutar el programa
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -53,7 +55,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         // Manejo de errores
-        Console.WriteLine($"An error occurred seeding the DB: {ex.Message}");
+        Console.WriteLine($"Error en seeding the DB: {ex.Message}");
     }
 }
 

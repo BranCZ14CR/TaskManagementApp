@@ -2,6 +2,10 @@
 
 namespace TaskManagementApp.Models
 {
+    /*
+        Clase de las Tareas, contiene los campos para la BD, los campos de los requerimientos hablados y tambien algunas
+        validaciones para lo que son campos requeridos en las páginas o funcionalidades del CRUD
+     */
     public class TaskItem
     {
         public int Id { get; set; }
