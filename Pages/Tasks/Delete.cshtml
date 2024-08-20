@@ -8,52 +8,44 @@
 <div class="container mt-5">
     <h1 class="text-danger text-center">Eliminar Tarea</h1>
 
-    <h3>¿Estás seguro de que deseas eliminar esta tarea?</h3>
-    <div class="alert alert-secondary mt-4">
-        <h4 class="text-black">@Html.DisplayFor(model => model.TaskItem.Titulo)</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-3">
-                Descripción:
-            </dt>
-            <dd class="col-sm-9">
-                @Html.DisplayFor(model => model.TaskItem.Descripcion)
-            </dd>
-            <dt class="col-sm-3">
-                Fecha de Vencimiento:
-            </dt>
-            <dd class="col-sm-9">
-                @Model.TaskItem.FechaVencimiento.ToString("dd/MM/yyyy")
-            </dd>
-            <dt class="col-sm-3">
-                Estado:
-            </dt>
-            <dd class="col-sm-9">
-                @if (Model.TaskItem.Completada)
-                {
-                    <span class="badge bg-success">Completada</span>
-                }
-                else
-                {
-                    <span class="badge bg-warning">Pendiente</span>
-                }
-            </dd>
-            <dt class="col-sm-3">
-                Usuario:
-            </dt>
-            <dd class="col-sm-9">
-                @Model.UserEmail
-            </dd>
-        </dl>
+    <div class="card shadow-sm mt-4 alert alert-secondary">
+        <div class="card-body">
+            <h4 class="card-title">@Model.TaskItem.Titulo</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-3 font-weight-bold">Descripción:</dt>
+                <dd class="col-sm-9">@Model.TaskItem.Descripcion</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Fecha de Vencimiento:</dt>
+                <dd class="col-sm-9">@Model.TaskItem.FechaVencimiento.ToString("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3 font-weight-bold">Estado:</dt>
+                <dd class="col-sm-9">
+                    @if (Model.TaskItem.Completada)
+                    {
+                        <span class="badge bg-success">Completada</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-warning">Pendiente</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3 font-weight-bold">Correo del Usuario:</dt>
+                <dd class="col-sm-9">@Model.UserEmail</dd>
+            </dl>
+        </div>
     </div>
 
-    <form method="post" class="mt-4 text-center">
-        <input type="hidden" asp-for="TaskItem.Id" />
-        <button type="submit" class="btn btn-danger btn-lg">
-            <i class="fas fa-trash-alt"></i> Eliminar
-        </button>
-        <a asp-page="./Index" class="btn btn-secondary ml-2 btn-lg">
-            <i class="fas fa-arrow-left"></i> Volver
-        </a>
-    </form>
+    <div class="mt-4 text-center">
+        <form method="post">
+            <input type="hidden" asp-for="TaskItem.Id" />
+            <button type="submit" class="btn btn-danger btn-lg">
+                <i class="fas fa-trash-alt"></i> Eliminar
+            </button>
+            <a asp-page="./Index" class="btn btn-secondary ml-2 btn-lg">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </form>
+    </div>
 </div>

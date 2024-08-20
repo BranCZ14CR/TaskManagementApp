@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 using TaskManagementApp.Data;
 using TaskManagementApp.Models;
 
@@ -15,11 +14,13 @@ namespace TaskManagementApp.Pages.Tasks
     [Authorize]
     public class EditModel : PageModel
     {
-        private readonly TaskManagementApp.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public EditModel(TaskManagementApp.Data.ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -43,8 +44,24 @@ namespace TaskManagementApp.Pages.Tasks
 
             TaskItem = taskitem;
 
-            // Load the list of users for the dropdown
-            Usuarios = new SelectList(await _context.Users.ToListAsync(), "Id", "Email");
+            // Obtener el usuario actual
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return NotFound("Usuario no encontrado.");
+            }
+
+            if (await _userManager.IsInRoleAsync(currentUser, "SuperUser"))
+            {
+                // Si es SuperUser, muestra todos los usuarios
+                Usuarios = new SelectList(await _context.Users.ToListAsync(), "Id", "Email", TaskItem.UsuarioId);
+            }
+            else
+            {
+                // Si no es SuperUser, muestra solo su propio usuario
+                Usuarios = new SelectList(await _context.Users
+                    .Where(u => u.Id == currentUser.Id).ToListAsync(), "Id", "Email", TaskItem.UsuarioId);
+            }
 
             // Set the email of the currently assigned user
             UsuarioEmail = await _context.Users
@@ -59,8 +76,16 @@ namespace TaskManagementApp.Pages.Tasks
         {
             if (!ModelState.IsValid)
             {
-                // Reload the list of users in case of a validation error
-                Usuarios = new SelectList(await _context.Users.ToListAsync(), "Id", "Email", TaskItem.UsuarioId);
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (await _userManager.IsInRoleAsync(currentUser, "SuperUser"))
+                {
+                    Usuarios = new SelectList(await _context.Users.ToListAsync(), "Id", "Email", TaskItem.UsuarioId);
+                }
+                else
+                {
+                    Usuarios = new SelectList(await _context.Users
+                        .Where(u => u.Id == currentUser.Id).ToListAsync(), "Id", "Email", TaskItem.UsuarioId);
+                }
                 return Page();
             }
 
