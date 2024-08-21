@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using TaskManagementApp.Data;
@@ -74,32 +75,48 @@ namespace TaskManagementApp.Pages.Tasks
                 // Obtener las tareas para la página actual con paginación
                 var tasks = await query
                     .OrderBy(t => t.FechaVencimiento)
-                    .Skip((pageNumber - 1) * pageSize) 
+                    .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
 
                 // Asignar el correo electrónico a cada tarea en el ViewModel para su visualización
                 foreach (var task in tasks)
                 {
-                    var user = await _userManager.FindByIdAsync(task.UsuarioId); // Obtener el usuario asignado a la tarea
-                    var email = user?.Email ?? "No asignado"; // Obtener el email del usuario o usar "No asignado" si el usuario es nulo
-
-                    // Agregar la tarea y el correo electrónico al ViewModel
-                    TaskItems.Add(new TaskItemViewModel
+                    var user = await _userManager.FindByIdAsync(task.UsuarioId);
+                    var viewModel = new TaskItemViewModel
                     {
                         TaskItem = task,
-                        UsuarioEmail = email
-                    });
+                        UsuarioEmail = user?.Email
+                    };
+                    TaskItems.Add(viewModel);
                 }
+
+                // Guardar el estado de mostrar tareas completadas en el ViewData para usarlo en la vista
+                ViewData["ShowCompleted"] = showCompleted;
             }
-            else
+        }
+
+        //Manejador para cambiar el estado de completado de una tarea
+        public async Task<IActionResult> OnPostToggleCompletedAsync(int id)
+        {
+            // Buscar la tarea por su ID
+            var task = await _context.TaskItems.FindAsync(id);
+
+            // Verificar que la tarea exista
+            if (task == null)
             {
-                // Manejo de error: Si el usuario no se encuentra, inicializar la lista de tareas vacía
-                TaskItems = new List<TaskItemViewModel>();
+                return new JsonResult(new { success = false, message = "Tarea no encontrada" });
             }
 
-            // Establecer el valor de "ShowCompleted" en el ViewData para usar en la vista
-            ViewData["ShowCompleted"] = showCompleted;
+            // Cambiar el estado de completada de la tarea
+            task.Completada = !task.Completada;
+
+            // Actualizar la tarea en la base de datos
+            _context.TaskItems.Update(task);
+            await _context.SaveChangesAsync();
+
+            // Devolver una respuesta en formato JSON indicando el éxito y el nuevo estado de la tarea
+            return new JsonResult(new { success = true, completada = task.Completada });
         }
     }
 }

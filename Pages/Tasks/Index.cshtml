@@ -1,6 +1,4 @@
-﻿@* Pagina para mostrar las tareas y las acciones a cada una de ellas*@
-
-@page
+﻿@page
 @model TaskManagementApp.Pages.Tasks.IndexModel
 
 @{
@@ -19,6 +17,10 @@
 
 <div class="input-group mb-4 mt-3">
     <input type="text" id="search-input" class="form-control" placeholder="Buscar tareas...">
+</div>
+
+<div style="visibility: hidden;">
+    <input type="hidden" name="__RequestVerificationToken" value="@Html.AntiForgeryToken()" />
 </div>
 
 <div class="table-responsive">
@@ -78,6 +80,45 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        // Obtener el token antifalsificación de la meta etiqueta
+        var antiForgeryToken = $('input[name="__RequestVerificationToken"]').val();
+
+        // Manejar el cambio del checkbox para marcar/desmarcar como completada
+        $('.toggle-completed').change(function () {
+            var checkbox = $(this);
+            var taskId = checkbox.data('id');
+
+            $.ajax({
+                url: '/Tasks/Index?handler=ToggleCompleted',
+                type: 'POST',
+                headers: {
+                    'RequestVerificationToken': antiForgeryToken
+                },
+                data: {
+                    id: taskId
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Actualizar la fila de la tarea
+                        var row = checkbox.closest('tr');
+                        if (response.completada) {
+                            row.addClass('table-success');
+                            checkbox.prop('checked', true);
+                        } else {
+                            row.removeClass('table-success');
+                            checkbox.prop('checked', false);
+                        }
+                        console.log('Status updated successfully.');
+                    } else {
+                        console.error('Error:', response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error updating status:', error);
+                }
+            });
+        });
+
         // Búsqueda en vivo
         $("#search-input").on("keyup", function () {
             var value = $(this).val().toLowerCase();
