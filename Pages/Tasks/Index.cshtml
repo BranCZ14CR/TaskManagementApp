@@ -9,7 +9,7 @@
 
 <div class="mb-3">
     <a class="btn btn-success" asp-page="Create"> <i class="fa-solid fa-square-plus"></i> Crear Nueva Tarea</a>
-    <a class="btn btn-secondary" asp-page="Index" asp-route-showCompleted="@(ViewData["ShowCompleted"] != null && (bool)ViewData["ShowCompleted"] ? "false" : "true")">
+    <a class="btn btn-secondary" asp-page="Index" asp-route-pageNumber="@(Model.PageNumber)" asp-route-showCompleted="@(ViewData["ShowCompleted"] != null && (bool)ViewData["ShowCompleted"] ? "false" : "true")">
         <i class="fa-solid @(ViewData["ShowCompleted"] != null && (bool)ViewData["ShowCompleted"] ? "fa-eye-slash" : "fa-eye")"></i>
         @(ViewData["ShowCompleted"] != null && (bool)ViewData["ShowCompleted"] ? " Ocultar Completadas" : " Mostrar Completadas")
     </a>
@@ -59,18 +59,18 @@
 <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
         <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
-            <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.PageNumber - 1)" aria-label="Previous">
+            <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-showCompleted="@(ViewData["ShowCompleted"] ?? false)" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
         @for (var i = 1; i <= Model.TotalPages; i++)
         {
             <li class="page-item @(i == Model.PageNumber ? "active" : "")">
-                <a class="page-link" asp-page="./Index" asp-route-pageNumber="@i">@i</a>
+                <a class="page-link" asp-page="./Index" asp-route-pageNumber="@i" asp-route-showCompleted="@(ViewData["ShowCompleted"] ?? false)">@i</a>
             </li>
         }
         <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
-            <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.PageNumber + 1)" aria-label="Next">
+            <a class="page-link" asp-page="./Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-showCompleted="@(ViewData["ShowCompleted"] ?? false)" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
